@@ -59,6 +59,7 @@ app.on('window-all-closed', (e: Event) => {
   // initApp.destroyTray()
   // app.quit()
   // win.hide()
+  app.dock.hide()
 })
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
