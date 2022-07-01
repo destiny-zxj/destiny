@@ -28,7 +28,8 @@ async function createWindow() {
       nodeIntegration: (process.env
           .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
       contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false
     }
   })
 
@@ -81,12 +82,14 @@ app.on('ready', async () => {
   Object.assign(global, {
     win: win
   })
+  // console.log(os.tmpdir())
+  // console.log(os.tmpdir())
   initApp = new InitApp(win, createWindow)
   app.dock.hide()
   win.hide()
-  const datetime = `${new Date().toLocaleDateString().replaceAll('/', '-')} ${new Date().toLocaleTimeString('zh-CN', {hour12: false})}`
-  console.log(datetime)
-  console.log(os.platform(), os.arch(), os.hostname())
+  // const datetime = `${new Date().toLocaleDateString().replaceAll('/', '-')} ${new Date().toLocaleTimeString('zh-CN', {hour12: false})}`
+  // console.log(datetime)
+  // console.log(os.platform(), os.arch(), os.hostname())
 })
 
 // Exit cleanly on request from parent process in development mode.

@@ -20,7 +20,7 @@ enum Cmd{
 const downieDownload = (cwd: string, items: any) => {
   const filename = path.join(cwd, new Date().getTime().toString() + '.csv')
   let data = 'url,title\n'
-  data += `${items.url},${items.title}`
+  data += `${items.url},${items.title}\n`
   // fs.writeFile(filename, data, {
   //   mode: 'w+'
   // }).then((res)=>{
@@ -59,7 +59,7 @@ const execShell = (cmd: string, filename=''): Promise<any> => {
         if (fs.existsSync(filename)) {
           setTimeout(()=>{
             fs.rmSync(filename)
-          }, 2000)
+          }, 5000)
         }
       }
       resolve({
@@ -72,7 +72,8 @@ const execShell = (cmd: string, filename=''): Promise<any> => {
 }
 
 const executeCmd = (params: any) => {
-  const temp_dir = path.join(__dirname, '.temp')
+  
+  const temp_dir = path.join(__dirname, '../.temp')
   if (!fs.existsSync(temp_dir)) {
     fs.mkdirSync(temp_dir)
   }

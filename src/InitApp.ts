@@ -1,4 +1,4 @@
-import { ipcMain, Tray, Menu, BrowserWindow, app } from 'electron'
+import { ipcMain, Tray, Menu, BrowserWindow, app, nativeImage } from 'electron'
 import { hello, handleExtUrl } from './funcs'
 import fs from 'fs'
 import path from 'path'
@@ -41,7 +41,7 @@ class InitApp{
       label: '退出',
       type: 'normal',
       click: () => {
-        const temp_dir = path.join(__dirname, '.temp')
+        const temp_dir = path.join(__dirname, '../.temp')
         this.deleteFolder(temp_dir)
         if ((global as any).db) {
           (global as any).db.close()
@@ -58,7 +58,9 @@ class InitApp{
     // ipc
     ipcMain.handle('hello', hello)
     // tray
-    this.tray = new Tray('./src/assets/tray.png')
+    const icon = nativeImage.createFromPath(path.join(__dirname, '../static/tray.png'))
+    this.tray = new Tray(icon)
+    win.hide()
     const contextMenu = Menu.buildFromTemplate(this.menus)
     this.tray.setToolTip('Destiny')
     this.tray.setContextMenu(contextMenu)
@@ -70,11 +72,11 @@ class InitApp{
     })
     // console.log((global as any).win)
     // Sql.execute('select ')
-    Sql.init().then(()=>{
-      // Sql.execute(`insert into logs(name, content, datetime) values('test', 'testtesttest', '2023');`).then(res=>{
-      //   console.log(res)
-      // })
-    })
+    // Sql.init().then(()=>{
+    //   // Sql.execute(`insert into logs(name, content, datetime) values('test', 'testtesttest', '2023');`).then(res=>{
+    //   //   console.log(res)
+    //   // })
+    // })
     
   }
 

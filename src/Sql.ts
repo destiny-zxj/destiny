@@ -15,7 +15,7 @@ export default class Sql{
     let db = (global as any).db
     while (!db) {
       // new database.Database(path.join(__dirname, 'database.db'))
-      (global as any).db = new database.Database(path.join(__dirname, 'database.db'))
+      (global as any).db = new database.Database(path.join(__dirname, '../database.db'))
       db = (global as any).db
     }
     return new Promise((resolve, reject)=>{
