@@ -20,6 +20,7 @@ class InitApp{
         } else {
           this.win.show()
         }
+        app.dock.show()
       }
     },
     {
@@ -29,6 +30,7 @@ class InitApp{
       click: async () => {
         if (!this.win.isDestroyed()) {
           this.win.hide()
+          app.dock.hide()
         }
       }
     },
@@ -60,7 +62,6 @@ class InitApp{
     // tray
     const icon = nativeImage.createFromPath(path.join(__dirname, '../static/tray.png'))
     this.tray = new Tray(icon)
-    win.hide()
     const contextMenu = Menu.buildFromTemplate(this.menus)
     this.tray.setToolTip('Destiny')
     this.tray.setContextMenu(contextMenu)
@@ -72,11 +73,11 @@ class InitApp{
     })
     // console.log((global as any).win)
     // Sql.execute('select ')
-    // Sql.init().then(()=>{
-    //   // Sql.execute(`insert into logs(name, content, datetime) values('test', 'testtesttest', '2023');`).then(res=>{
-    //   //   console.log(res)
-    //   // })
-    // })
+    Sql.init().then(()=>{
+      // Sql.execute(`insert into logs(name, content, datetime) values('test', 'testtesttest', '2023');`).then(res=>{
+      //   console.log(res)
+      // })
+    })
     
   }
 

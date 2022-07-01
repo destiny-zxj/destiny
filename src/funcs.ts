@@ -55,13 +55,6 @@ const execShell = (cmd: string, filename=''): Promise<any> => {
     shell.exec(cmd, {
       silent: true
     }, (code, stdout, stderr)=>{
-      if (filename && filename != '/' && filename != './' && !filename.startsWith('~')) {
-        if (fs.existsSync(filename)) {
-          setTimeout(()=>{
-            fs.rmSync(filename)
-          }, 5000)
-        }
-      }
       resolve({
         code, stdout, stderr
       })
@@ -98,7 +91,7 @@ const handleExtUrl = (url: string) => {
   // console.log(querys)
   for (let i=0; i< querys.length;i++) {
     const items = querys[i].split('=')
-    params[items[0]] = items[1]
+    params[items[0]] = decodeURI(items[1])
   }
   // params
   if ('cmd' in params) {

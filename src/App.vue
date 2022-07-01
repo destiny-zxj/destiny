@@ -12,7 +12,17 @@
   text-align: center;
   color: #2c3e50;
 }
-
+*{
+  moz-user-select: -moz-none;
+  -moz-user-select: none;
+  -o-user-select:none;
+  -khtml-user-select:none;
+  -webkit-user-select:none;
+  -ms-user-select:none;
+  user-select:none;
+  padding: 0;
+  margin: 0;
+}
 #nav {
   padding: 30px;
 }
