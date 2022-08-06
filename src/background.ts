@@ -8,6 +8,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 import path from 'path'
 import { InitApp } from './InitApp'
 import os from 'os'
+import Server from './Server'
 let initApp: InitApp
 
 // Scheme must be registered before the app is ready
@@ -86,6 +87,7 @@ app.on('ready', async () => {
   // console.log(os.tmpdir())
   // console.log(os.tmpdir())
   initApp = new InitApp(win, createWindow)
+  new Server()
   app.dock.hide()
   win.hide()
   // const datetime = `${new Date().toLocaleDateString().replaceAll('/', '-')} ${new Date().toLocaleTimeString('zh-CN', {hour12: false})}`

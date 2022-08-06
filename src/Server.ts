@@ -9,7 +9,6 @@ import { pool } from './utils/pool';
 import Res from './utils/Res';
 import bodyParser from 'body-parser'
 import Util from './utils/Util';
-import { Middleware } from './utils/Middlewares';
 import cors from 'cors'
 import qs from 'qs'
 

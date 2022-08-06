@@ -3,7 +3,7 @@ import { hello, handleExtUrl } from './funcs'
 import fs from 'fs'
 import path from 'path'
 // import Sql from './sql'
-import Server from './Server'
+// import Server from './Server'
 
 
 class InitApp{
@@ -82,7 +82,7 @@ class InitApp{
     //   // })
     // })
     // express
-    this.server = new Server()
+    // this.server = new Server()
   }
 
   public destroyTray(): any {
