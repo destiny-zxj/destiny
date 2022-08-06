@@ -23,6 +23,16 @@
   padding: 0;
   margin: 0;
 }
+:root{
+  --color-text: #000000;
+  --color-bg: #ffffff;
+}
+html, body, #app {
+  height: 100%;
+  width: 100%;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
 #nav {
   padding: 30px;
 }

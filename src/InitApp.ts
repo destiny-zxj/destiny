@@ -2,7 +2,8 @@ import { ipcMain, Tray, Menu, BrowserWindow, app, nativeImage } from 'electron'
 import { hello, handleExtUrl } from './funcs'
 import fs from 'fs'
 import path from 'path'
-import Sql from './sql'
+// import Sql from './sql'
+import Server from './Server'
 
 
 class InitApp{
@@ -52,6 +53,7 @@ class InitApp{
       }
     }
   ];
+  private server: any;
 
   constructor(win: BrowserWindow, callback: any) {
     // win
@@ -60,7 +62,8 @@ class InitApp{
     // ipc
     ipcMain.handle('hello', hello)
     // tray
-    const icon = nativeImage.createFromPath(path.join(__dirname, '../static/tray.png'))
+    // console.log(process.env.VUE_APP_TRAY)
+    const icon = nativeImage.createFromPath(path.join(__dirname, process.env.VUE_APP_TRAY as string))
     this.tray = new Tray(icon)
     const contextMenu = Menu.buildFromTemplate(this.menus)
     this.tray.setToolTip('Destiny')
@@ -73,12 +76,13 @@ class InitApp{
     })
     // console.log((global as any).win)
     // Sql.execute('select ')
-    Sql.init().then(()=>{
-      // Sql.execute(`insert into logs(name, content, datetime) values('test', 'testtesttest', '2023');`).then(res=>{
-      //   console.log(res)
-      // })
-    })
-    
+    // Sql.init().then(()=>{
+    //   // Sql.execute(`insert into logs(name, content, datetime) values('test', 'testtesttest', '2023');`).then(res=>{
+    //   //   console.log(res)
+    //   // })
+    // })
+    // express
+    this.server = new Server()
   }
 
   public destroyTray(): any {

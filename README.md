@@ -11,3 +11,11 @@ cmd: constant value
 url: video url
 title: video title
 ```
+## PS
+* destiny sql
+```bash
+# add follow
+DROP DATABASE IF EXISTS destiny;
+CREATE DATABASE destiny CHARSET=utf8mb4;
+USE destiny;
+```

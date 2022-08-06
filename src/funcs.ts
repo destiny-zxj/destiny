@@ -8,8 +8,9 @@
 import shell from 'shelljs'
 import path from 'path'
 import fs from 'fs'
-import Sql from './sql'
+// import Sql from './sql'
 import os from 'os'
+import { pool } from './utils/pool'
 
 shell.config.execPath = __dirname
 
@@ -58,8 +59,15 @@ const execShell = (cmd: string, filename=''): Promise<any> => {
       resolve({
         code, stdout, stderr
       })
-      const datetime = `${new Date().toLocaleDateString().replaceAll('/', '-')} ${new Date().toLocaleTimeString('zh-CN', {hour12: false})}`
-      Sql.execute('insert into logs(id, name, content, datetime) values(?,?,?,?);', [`${os.platform()} ${os.arch()} ${os.hostname()}`, 'execshell', cmd, datetime])
+      // const datetime = `${new Date().toLocaleDateString().replaceAll('/', '-')} ${new Date().toLocaleTimeString('zh-CN', {hour12: false})}`
+      pool.getConnection((err, conn) => {
+        if (err) throw err;
+        conn.query(
+          'insert into logs(name, type, content, datetime, status) values(?,?,?,?,1);',
+          [`${os.platform()} ${os.arch()} ${os.hostname()}`, 'execshell', cmd, new Date().getTime()]
+        )
+      })
+      // Sql.execute('insert into logs(id, name, content, datetime) values(?,?,?,?);', [`${os.platform()} ${os.arch()} ${os.hostname()}`, 'execshell', cmd, datetime])
     })
   })
 }

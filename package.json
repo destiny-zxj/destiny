@@ -1,6 +1,6 @@
 {
   "name": "destiny",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "repository": "https://github.com/destiny-zxj/destiny.git",
   "author": "destiny_zxj",
@@ -17,15 +17,23 @@
   },
   "main": "background.js",
   "dependencies": {
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
     "electron-updater": "^5.0.5",
+    "express": "^4.18.1",
+    "mysql": "^2.18.1",
+    "qs": "^6.11.0",
     "shelljs": "^0.8.5",
-    "sqlite3": "^5.0.8",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.2",
+    "@types/cors": "^2.8.12",
     "@types/electron-devtools-installer": "^2.2.0",
+    "@types/mysql": "^2.15.21",
+    "@types/qs": "^6.9.7",
     "@types/shelljs": "^0.8.11",
     "@types/sqlite3": "^3.1.8",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
