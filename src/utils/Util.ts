@@ -4,29 +4,50 @@
  ** Datetime: 2022/08/06 Saturday 18:59:31
  ** Description: ...
 */
+import { Toast } from 'vant'
 
 export default class Util{
 
-  public static generateSqlData(data: Record<string, any>): SqlData {
-    const fields: string[] = []
-    const placeholders: string[] = []
-    const values: any[] = []
-    for(const key in data) {
-      const value = data[key]
-      if (value != undefined && value != null && value != '') {
-        fields.push(key)
-        placeholders.push('?')
-        values.push(value)
-      }
-    }
+  /**
+   * 
+   * @param msg 轻提示
+   * @param duration 
+   */
+  public static showToast(msg: string, duration=2000): void {
+    Toast({
+      message: msg,
+      forbidClick: true,
+      duration: duration
+    })
+  }
+
+  /**
+   * 获取日期时间
+   * @param timestamp 毫秒级时间戳
+   * @returns 
+   */
+  public static getDateTime(timestamp: number): DateTime {
+    const date = new Date(timestamp)
+    const year = date.getFullYear().toString()
+    let month = (date.getMonth() + 1).toString()
+    if (month.length < 2) month = `0${month}`
+    let day = date.getDate().toString()
+    if (day.length < 2) day = `0${day}`
+    let hours = date.getHours().toString()
+    if (hours.length < 2) hours = `0${hours}`
+    let minutes = date.getMinutes().toString()
+    if (minutes.length < 2) minutes = `0${minutes}`
+    let seconds = date.getSeconds().toString()
+    if (seconds.length < 2) seconds = `0${seconds}`
     return {
-      fields, placeholders, values
+      date: [year, month, day],
+      time: [hours, minutes, seconds]
     }
   }
-}
 
-interface SqlData{
-  fields: string[]; 
-  placeholders: string[];
-  values: any[];
+
+}
+interface DateTime{
+  date: string[];
+  time: string[];
 }

@@ -1,6 +1,22 @@
 <template>
   <div class='main'>
-    {{res}}
+    <div class="main-sidemenu">
+      <side-menu />
+    </div>
+    <div class="main-center">
+      <div class="main-center-top">
+        <div class="main-center-top-hello">
+          <span>Hello, Admin</span>
+        </div>
+        <div class="main-center-top-welcome">
+          <span>Welcome back!</span>
+        </div>
+      </div>
+      <router-view />
+    </div>
+    <div class="main-right-box">
+      <right-box />
+    </div>
   </div>
 </template>
 
@@ -11,11 +27,14 @@
  ** description: ..
 */
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
+import SideMenu from '@/components/SideMenu.vue'
+import RightBox from '@/components/RightBox.vue'
+import { ElectronApi } from '@/utils/ElectronApi'
 
 export default defineComponent({
   name: '',
   components: {
-
+    SideMenu, RightBox
   },
   setup () {
     const data = reactive({
@@ -27,7 +46,10 @@ export default defineComponent({
     }
     onMounted(()=>{
       // alert(data.res);
-      (window as any).electronAPI.print(onPrint)
+      // (window as any).electronAPI.print(onPrint)
+      // ElectronApi.hello().then((res: any)=>{
+      //   console.log(res)
+      // })
     })
 
     return {
@@ -38,5 +60,23 @@ export default defineComponent({
 
 </script>
 <style>
-
+.main {
+  height: 100%;
+  display: flex;
+}
+.main-center {
+  flex: 1;
+  box-sizing: border-box;
+  padding: 30px 20px 0;
+}
+.main-center-top {
+  text-align: left;
+}
+.main-center-top-hello {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+.main-center-top-welcome {
+  color: var(--van-gray-7);
+}
 </style>

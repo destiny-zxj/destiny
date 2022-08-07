@@ -8,7 +8,18 @@
 export default class Path{
   public static Main = {
     name: 'Main',
-    path: '/main',
-    url: '/main'
+    path: '/main'
+  }
+  public static Home = {
+    name: 'Home',
+    path: '/main/home'
+  }
+  public static Settings = {
+    name: 'Settings',
+    path: '/main/settings'
+  }
+  public static LocalServer = {
+    name: 'LocalServer',
+    path: '/main/localserver'
   }
 }

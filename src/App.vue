@@ -26,12 +26,16 @@
 :root{
   --color-text: #000000;
   --color-bg: #ffffff;
+  --color-ft: #FFFFFF;
+  --color-theme1: #6F81D6;
+  --font-size: 16px;
 }
-html, body, #app {
+html, body, #app, .app {
   height: 100%;
   width: 100%;
   background-color: var(--color-bg);
   color: var(--color-text);
+  font-size: var(--font-size);
 }
 #nav {
   padding: 30px;

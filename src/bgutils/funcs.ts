@@ -10,14 +10,16 @@ import path from 'path'
 import fs from 'fs'
 // import Sql from './sql'
 import os from 'os'
-import { pool } from './utils/pool'
+import BgStore from './BgStore'
+import Server from './Server'
+import Sql from './Sql'
 
 shell.config.execPath = __dirname
 
 enum Cmd{
   DOWNIE4_DOWNLOAD='downie4.download'
 }
-// 
+// downie 4 下载
 const downieDownload = (cwd: string, items: any) => {
   const filename = path.join(cwd, new Date().getTime().toString() + '.csv')
   let data = 'url,title\n'
@@ -60,12 +62,10 @@ const execShell = (cmd: string, filename=''): Promise<any> => {
         code, stdout, stderr
       })
       // const datetime = `${new Date().toLocaleDateString().replaceAll('/', '-')} ${new Date().toLocaleTimeString('zh-CN', {hour12: false})}`
-      pool.getConnection((err, conn) => {
-        if (err) throw err;
-        conn.query(
-          'insert into logs(name, type, content, datetime, status) values(?,?,?,?,1);',
-          [`${os.platform()} ${os.arch()} ${os.hostname()}`, 'execshell', cmd, new Date().getTime()]
-        )
+      Sql.logs_write({
+        name: `${os.platform()} ${os.arch()} ${os.hostname()}`,
+        type: 'execshell',
+        content: cmd
       })
       // Sql.execute('insert into logs(id, name, content, datetime) values(?,?,?,?);', [`${os.platform()} ${os.arch()} ${os.hostname()}`, 'execshell', cmd, datetime])
     })
@@ -107,6 +107,54 @@ const handleExtUrl = (url: string) => {
   }
 }
 
+const getServerStatus = (): Promise<string> => {
+  const server = BgStore.server
+  return new Promise((resolve)=>{
+    // console.log(BgStore.server)
+    if (!server) return resolve('0')
+    resolve(server.isRunning()? '1' : '0')
+  })
+}
+
+const getServerConfig = async (): Promise<any> => {
+  const port = BgStore.serverPort
+  const meta = await Sql.getMeta('local_server_auto_run')
+  let auto_run = ''
+  if (meta.code === 200 && meta.data && meta.data.length > 0) {
+    auto_run = meta.data[0]
+  }
+  
+  return new Promise((resolve)=>{
+    resolve({
+      port,
+      auto_run: auto_run
+    })
+  })
+}
+
+const reloadServer = (event: any, status: string): Promise<boolean> => {
+  console.log('ARGS', status)
+  return new Promise((resolve)=>{
+    if (!BgStore.server) resolve(true)
+    // 停止
+    if (status === '1') resolve(BgStore.server.stop())
+    // 开启
+    if (status === '0') {
+      BgStore.server = new Server() as any
+      if (BgStore.server && BgStore.server.isRunning()) resolve(true)
+      resolve(false)
+    }
+    // 重启
+    if (status === '2') {
+      const resStop = BgStore.server.stop()
+      if (!resStop) resolve(resStop)
+      BgStore.server = new Server() as any
+      if (BgStore.server && BgStore.server.isRunning()) resolve(true)
+      resolve(false)
+    }
+  })
+}
+
 export {
-  hello, handleExtUrl
+  hello, handleExtUrl, getServerStatus, getServerConfig, reloadServer
 }

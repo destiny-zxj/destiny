@@ -8,8 +8,8 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 import path from 'path'
 import { InitApp } from './InitApp'
 import os from 'os'
-import Server from './Server'
-let initApp: InitApp
+import BgStore from './bgutils/BgStore'
+let initApp: InitApp;
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -19,6 +19,8 @@ let win: BrowserWindow
 
 async function createWindow() {
   // Create the browser window.
+  // 1400 * 1000
+  // 1000 * 800
   win = new BrowserWindow({
     width: 1400,
     height: 1000,
@@ -81,18 +83,15 @@ app.on('ready', async () => {
     }
   }
   createWindow()
+  initApp = new InitApp(win, createWindow)
+  // hide
+  // app.dock.hide()
+  // win.hide()
+  // 保存全局变量
+  BgStore.win = win
   Object.assign(global, {
     win: win
   })
-  // console.log(os.tmpdir())
-  // console.log(os.tmpdir())
-  initApp = new InitApp(win, createWindow)
-  new Server()
-  app.dock.hide()
-  win.hide()
-  // const datetime = `${new Date().toLocaleDateString().replaceAll('/', '-')} ${new Date().toLocaleTimeString('zh-CN', {hour12: false})}`
-  // console.log(datetime)
-  // console.log(os.platform(), os.arch(), os.hostname())
 })
 
 // Exit cleanly on request from parent process in development mode.

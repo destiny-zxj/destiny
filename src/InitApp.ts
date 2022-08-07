@@ -1,5 +1,7 @@
 import { ipcMain, Tray, Menu, BrowserWindow, app, nativeImage } from 'electron'
-import { hello, handleExtUrl } from './funcs'
+import {
+  hello, handleExtUrl, getServerStatus, getServerConfig, reloadServer
+} from './bgutils/funcs'
 import fs from 'fs'
 import path from 'path'
 // import Sql from './sql'
@@ -59,8 +61,13 @@ class InitApp{
     // win
     this.win = win
     this.callback = callback
-    // ipc
+    // ipc 注册
     ipcMain.handle('hello', hello)
+    ipcMain.handle('getServerStatus', getServerStatus)
+    ipcMain.handle('getServerConfig', getServerConfig)
+    ipcMain.handle('reloadServer', reloadServer)
+    // 监听前传来的指令
+    // ipcMain.on('reloadServer', reloadServer)
     // tray
     // console.log(process.env.VUE_APP_TRAY)
     const icon = nativeImage.createFromPath(path.join(__dirname, process.env.VUE_APP_TRAY as string))
