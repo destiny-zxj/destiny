@@ -11,10 +11,11 @@ import Server from "./Server"
 import Sql from "./Sql"
 import fs from 'fs'
 import Res from "./Res"
+import path from 'path'
 
 export default class BgUtil{
   // AppConfig.json 文件路径
-  public static appConfigFile = `${__dirname}/${process.env.VUE_APP_CONFIG as string}`;
+  public static appConfigFile = path.join(__dirname, process.env.VUE_APP_CONFIG as string)
   public static generateSqlData(data: Record<string, any>): SqlData {
     const fields: string[] = []
     const placeholders: string[] = []

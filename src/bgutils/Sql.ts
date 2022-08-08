@@ -111,6 +111,7 @@ export default class Sql{
         'insert into logs(name, type, content, datetime, status) values(?,?,?,?,?);',
         [data.name, data.type, data.content, new Date().getTime(), data.status]
       )
+      conn.release()
     })
   }
   // meta
