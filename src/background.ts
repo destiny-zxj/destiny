@@ -9,6 +9,7 @@ import path from 'path'
 import { InitApp } from './InitApp'
 import os from 'os'
 import BgStore from './bgutils/BgStore'
+import BgUtil from './bgutils/BgUtil'
 let initApp: InitApp;
 
 // Scheme must be registered before the app is ready
@@ -84,6 +85,8 @@ app.on('ready', async () => {
   }
   createWindow()
   initApp = new InitApp(win, createWindow)
+  BgUtil.initBgStore()
+  BgUtil.load()
   // hide
   // app.dock.hide()
   // win.hide()

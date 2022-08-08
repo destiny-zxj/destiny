@@ -1,6 +1,7 @@
 import { ipcMain, Tray, Menu, BrowserWindow, app, nativeImage } from 'electron'
 import {
-  hello, handleExtUrl, getServerStatus, getServerConfig, reloadServer
+  hello, handleExtUrl, getServerStatus, getServerConfig, reloadServer, saveServerConfig, getAppConfig,
+  saveAppConfig, getMysqlStatus
 } from './bgutils/funcs'
 import fs from 'fs'
 import path from 'path'
@@ -66,6 +67,10 @@ class InitApp{
     ipcMain.handle('getServerStatus', getServerStatus)
     ipcMain.handle('getServerConfig', getServerConfig)
     ipcMain.handle('reloadServer', reloadServer)
+    ipcMain.handle('saveServerConfig', saveServerConfig)
+    ipcMain.handle('getAppConfig', getAppConfig)
+    ipcMain.handle('saveAppConfig', saveAppConfig)
+    ipcMain.handle('getMysqlStatus', getMysqlStatus)
     // 监听前传来的指令
     // ipcMain.on('reloadServer', reloadServer)
     // tray

@@ -70,7 +70,7 @@ export default defineComponent({
     }
 
     onMounted(()=>{
-      activeMenuItem(data.menu[2])
+      activeMenuItem(data.menu[3])
     })
 
     return {

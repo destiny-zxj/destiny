@@ -15,12 +15,7 @@ export default class Sql{
   public static bthj_download_getByHash(hash: string): Promise<Res> {
     const res = new Res();
     return new Promise((resolve) => {
-      BgStore.getPool().getConnection((err, conn) => {
-        if (err) {
-          res.msg = 'ERROR_MYSQL'
-          res.data = err
-          resolve(res)
-        }
+      BgStore.getPoolConnection().then((conn)=>{
         const sql = 'select * from bthj_download where hash = ?;'
         conn.query(sql, hash, (error, results) => {
           if (error) {
@@ -40,12 +35,7 @@ export default class Sql{
   public static bthj_download_update(data: Record<string, any>): Promise<Res> {
     const res = new Res()
     return new Promise((resolve) => {
-      BgStore.getPool().getConnection((err, conn) => {
-        if (err) {
-          res.msg = 'ERROR_MYSQL'
-          res.data = err
-          resolve(res)
-        }
+      BgStore.getPoolConnection().then((conn)=>{
         const hash = data.hash
         let sql = 'update bthj_download set ${0} where hash = ?;'
         const {fields, placeholders, values} = BgUtil.generateSqlData(data)
@@ -79,12 +69,7 @@ export default class Sql{
   public static bthj_download_insert(data: Record<string, any>): Promise<Res> {
     const res = new Res();
     return new Promise((resolve) => {
-      BgStore.getPool().getConnection((err, conn) => {
-        if (err) {
-          res.msg = 'ERROR_MYSQL'
-          res.data = err
-          resolve(res)
-        }
+      BgStore.getPoolConnection().then((conn)=>{
         let sql = 'insert into bthj_download(${0}) values(${1});'
         const {fields, placeholders, values} = BgUtil.generateSqlData(data)
         sql = sql.replace('${0}', fields.join(','))
@@ -121,8 +106,7 @@ export default class Sql{
     content: string,
     status?: number
   }): void {
-    BgStore.getPool().getConnection((err, conn) => {
-      if (err) throw err;
+    BgStore.getPoolConnection().then((conn)=>{
       conn.query(
         'insert into logs(name, type, content, datetime, status) values(?,?,?,?,?);',
         [data.name, data.type, data.content, new Date().getTime(), data.status]
@@ -133,20 +117,20 @@ export default class Sql{
   public static getMeta(meta_key: string): Promise<Res> {
     const res = new Res();
     return new Promise((resolve) => {
-      BgStore.getPool().getConnection((err, conn) => {
-        if (err) {
-          res.msg = 'ERROR_MYSQL'
-          res.data = err
-          resolve(res)
-        }
+      BgStore.getPoolConnection().then((conn)=>{
         const sql = 'select * from meta where meta_key = ?;'
         conn.query(sql, meta_key, (error, results) => {
           if (error) {
             res.msg = 'ERROR_MYSQL_EXECUTE'
             res.data = error
           } else {
+            const resData = results
+            if (resData && resData.length > 0) {
+              res.data = resData[0].meta_value
+            } else {
+              res.data = null
+            }
             res.code = 200
-            res.data = results
             res.msg = '获取成功'
           }
           resolve(res)
@@ -158,12 +142,7 @@ export default class Sql{
   public static insertMeta(meta_key: string, meta_value: string): Promise<Res> {
     const res = new Res();
     return new Promise((resolve) => {
-      BgStore.getPool().getConnection((err, conn) => {
-        if (err) {
-          res.msg = 'ERROR_MYSQL'
-          res.data = err
-          resolve(res)
-        }
+      BgStore.getPoolConnection().then((conn)=>{
         const sql = 'insert into meta(meta_key, meta_value, datetime) values(?,?,?);'
         const timestamp = new Date().getTime()
         const values = [meta_key, meta_value, timestamp]
@@ -193,12 +172,7 @@ export default class Sql{
   public static updateMeta(meta_key: string, meta_value: string): Promise<Res> {
     const res = new Res();
     return new Promise((resolve) => {
-      BgStore.getPool().getConnection((err, conn) => {
-        if (err) {
-          res.msg = 'ERROR_MYSQL'
-          res.data = err
-          resolve(res)
-        }
+      BgStore.getPoolConnection().then((conn)=>{
         const sql = 'update meta set meta_value = ?, datetime = ? where meta_key = ?;'
         const timestamp = new Date().getTime()
         const values = [meta_value, timestamp, meta_key]
@@ -224,5 +198,15 @@ export default class Sql{
         conn.release()
       })
     })
+  }
+  public static async saveMeta(meta_key: string, meta_value: string): Promise<Res> {
+    console.log(`meta: ${meta_key};${meta_value}`)
+    const res_get = await Sql.getMeta(meta_key)
+    if (res_get.code === 200 && res_get.data && res_get.data.length > 0) {
+      return Sql.updateMeta(meta_key, meta_value)
+    } else {
+      console.log('insert')
+      return Sql.insertMeta(meta_key, meta_value)
+    }
   }
 }

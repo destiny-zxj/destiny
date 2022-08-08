@@ -11,7 +11,7 @@
  Target Server Version : 80025
  File Encoding         : 65001
 
- Date: 07/08/2022 00:20:53
+ Date: 08/08/2022 16:15:52
 */
 
 SET NAMES utf8mb4;
@@ -19,6 +19,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP DATABASE IF EXISTS destiny;
 CREATE DATABASE destiny CHARSET=utf8mb4;
 USE destiny;
+
 -- ----------------------------
 -- Table structure for bthj_download
 -- ----------------------------
@@ -56,5 +57,17 @@ CREATE TABLE `logs` (
   `status` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Table structure for meta
+-- ----------------------------
+DROP TABLE IF EXISTS `meta`;
+CREATE TABLE `meta` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `meta_key` varchar(32) NOT NULL,
+  `meta_value` varchar(255) DEFAULT NULL,
+  `datetime` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

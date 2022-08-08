@@ -10,6 +10,20 @@ export default class Util{
 
   /**
    * 
+   * @param port 端口有效性校验
+   * @returns 
+   */
+  public static isValidPort(port: string): boolean {
+    const intValue = parseInt(port)
+    if (intValue < 1024 || intValue > 60000) {
+      Util.showToast('请输入正确端口号(1025~60000)', 1000)
+      return false
+    }
+    return true
+  }
+
+  /**
+   * 
    * @param msg 轻提示
    * @param duration 
    */

@@ -1,14 +1,12 @@
 <template>
   <div class='local-server'>
-    <div class="local-server-status">
-      <van-divider :style="{ color: status.color, borderColor: status.color }">
-        本地服务器状态：{{ status.name }}
-      </van-divider>
-    </div>
+    <status-bar :status="status.value">
+        <template #default>
+          本地服务器状态：{{ status.name }}
+        </template>
+      </status-bar>
     <div class="local-server-flush">
-      <van-button class="lsr-flush" type="primary" size="small" loading-text="加载中..."
-      :loading="loading" :disabled="loading" @click="getLocalServerStatus"
-      >
+      <van-button class="lsr-flush" type="primary" size="small" :disabled="loading" @click="getLocalServerStatus">
         刷新状态
       </van-button>
     </div>
@@ -17,13 +15,17 @@
         <template #default>
           <div class="local-server-configs">
             <van-cell-group inset>
-              <van-field v-model="config.port" @update:model-value="onConfigPortChange" type="number" label="服务器端口号" placeholder="请输入端口号" />
+              <van-field v-model="config.port" type="number" label="服务器端口号" placeholder="请输入端口号" />
               <div class="lsc-auto">
-                <span>默认开启:</span><van-switch class="lsc-switch" v-model="config.auto_run" size="20px"/>
+                <span>默认开启:</span>
+                <van-switch class="lsc-switch" :disabled="loading" active-value="1" inactive-value="0" v-model="config.auto_run" size="20px"/>
               </div>
             </van-cell-group>
             <div class="local-server-save">
               <van-button type="primary" size="small" :disabled="loading" @click="saveServerConfig">保存配置</van-button>
+            </div>
+            <div class="local-server-save-ps">
+              <span>* 保存配置后重启生效！</span>
             </div>
           </div>
         </template>
@@ -53,11 +55,12 @@ import { ElectronApi } from '@/utils/ElectronApi'
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import MyCard from '@/components/MyCard.vue'
 import Util from '@/utils/Util'
+import StatusBar from '@/components/StatusBar.vue'
 
 export default defineComponent({
   name: '',
   components: {
-    MyCard
+    MyCard, StatusBar
   },
   setup () {
     const data = reactive({
@@ -95,8 +98,8 @@ export default defineComponent({
       getLocalServerConfig()
       setTimeout(()=>{
         data.loading = false
-        Util.showToast('加载成功', 1000)
-      }, 1000)
+        Util.showToast('加载成功', 500)
+      }, 200)
     }
     const getLocalServerConfig = async () => {
       const serverConfig = await ElectronApi.getServerConfig()
@@ -116,15 +119,27 @@ export default defineComponent({
         }
       })
     }
-    const onConfigPortChange = (value: string) => {
-      const intValue = parseInt(value)
-      if (intValue < 1024 || intValue > 600000) {
-        Util.showToast('请输入正确端口号')
-        data.config.port = '16215'
-      }
-    }
     const saveServerConfig = () => {
-      console.log(data.config.auto_run? 1:0)
+      if (!Util.isValidPort(data.config.port)) {
+        data.config.port = '16215'
+        return
+      }
+      data.loading = true
+      const config = {
+        server_port: data.config.port,
+        server_auto_run: data.config.auto_run
+      }
+      console.log(config)
+      ElectronApi.saveServerConfig(config).then((res: any)=>{
+        if (res) {
+          setTimeout(()=>{
+            getLocalServerStatus()
+          }, 500)
+        }
+        else {
+          data.loading = false
+        }
+      })
     }
 
     onMounted(()=>{
@@ -135,7 +150,6 @@ export default defineComponent({
       ...toRefs(data),
       reloadServer,
       getLocalServerStatus,
-      onConfigPortChange,
       saveServerConfig
     }
   }
@@ -154,6 +168,12 @@ export default defineComponent({
 }
 .local-server-save {
   text-align: right;
+}
+.local-server-save-ps {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  text-align: right;
+  color: var(--van-gray-6);
 }
 .lsc-btns {
   text-align: right;

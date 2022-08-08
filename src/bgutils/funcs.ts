@@ -13,6 +13,9 @@ import os from 'os'
 import BgStore from './BgStore'
 import Server from './Server'
 import Sql from './Sql'
+import { MetaKey } from './MetaConfig'
+import BgUtil from './BgUtil'
+import Res from './Res'
 
 shell.config.execPath = __dirname
 
@@ -115,10 +118,13 @@ const getServerStatus = (): Promise<string> => {
     resolve(server.isRunning()? '1' : '0')
   })
 }
-
+/**
+ * 获取本地服务器配置
+ * @returns 
+ */
 const getServerConfig = async (): Promise<any> => {
   const port = BgStore.serverPort
-  const meta = await Sql.getMeta('local_server_auto_run')
+  const meta = await Sql.getMeta(MetaKey.SERVER_AUTO_RUN)
   let auto_run = ''
   if (meta.code === 200 && meta.data && meta.data.length > 0) {
     auto_run = meta.data[0]
@@ -154,7 +160,66 @@ const reloadServer = (event: any, status: string): Promise<boolean> => {
     }
   })
 }
+/**
+ * 保存服务器配置
+ * @param event 
+ * @param config 
+ * @returns 
+ */
+const saveServerConfig = (event: any, config: any): Promise<boolean> => {
+  return new Promise((resolve)=>{
+    if (!config) resolve(false)
+    if (config.server_port) Sql.saveMeta(MetaKey.SERVER_PORT, config.server_port)
+    if (config.server_auto_run) Sql.saveMeta(MetaKey.SERVER_AUTO_RUN, config.server_auto_run)
+    resolve(true)
+  })
+}
+
+/**
+ * 获取 mysql 连接状态
+ * @returns 
+ */
+const getMysqlStatus = (): Promise<boolean> => {
+  return new Promise((resolve)=>{
+    const config = BgUtil.getAppConfig()
+    if (config && config.mysql) {
+      BgStore.testMysqlConnection({
+        host: config.mysql.host,
+        port: config.mysql.port,
+        user: config.mysql.user,
+        password: config.mysql.password,
+        database: config.mysql.database
+      }).then(res=>{
+        resolve(res)
+      })
+    } else {
+      resolve(false)
+    }
+  })
+}
+/**
+ * 获取 AppConfig
+ * @returns 
+ */
+const getAppConfig = (): Promise<any> => {
+  return new Promise((resolve)=>{
+    resolve(BgUtil.getAppConfig())
+  })
+}
+/**
+ * 保存 AppConfig
+ * @param event 
+ * @param appConfig 
+ * @returns 
+ */
+const saveAppConfig = (event: any, appConfig: any): Promise<Res> => {
+  return new Promise((resolve)=>{
+    console.log(appConfig)
+    resolve(BgUtil.saveAppConfig(appConfig))
+  })
+}
 
 export {
-  hello, handleExtUrl, getServerStatus, getServerConfig, reloadServer
+  hello, handleExtUrl, getServerStatus, getServerConfig, reloadServer, saveServerConfig, getAppConfig,
+  saveAppConfig, getMysqlStatus
 }
