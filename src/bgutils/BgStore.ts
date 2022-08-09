@@ -49,7 +49,8 @@ export default class BgStore{
             user: config.mysql.user,
             password: config.mysql.password,
             database: config.mysql.database,
-            timeout: 2000
+            timeout: 2000,
+            connectionLimit: 10
           }).getConnection((err, conn)=>{
             if (err) {
               console.log('数据库连接失败！')
@@ -62,7 +63,6 @@ export default class BgStore{
           console.error(`数据库配置文件错误：${process.env.VUE_APP_CONFIG}`)
           process.exit(1)
         }
-        
       }
     })
   }

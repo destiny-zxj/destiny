@@ -26,9 +26,9 @@ export default class Sql{
             res.data = results
             res.msg = '获取成功'
           }
+          conn.release()
           resolve(res)
         })
-        conn.release()
       })
     })
   }
@@ -54,6 +54,7 @@ export default class Sql{
             res.msg = '更新成功'
             status = 1
           }
+          conn.release()
           Sql.logs_write({
             name: new Date().getTime().toString(),
             type: 'exec_sql_update',
@@ -62,7 +63,6 @@ export default class Sql{
           })
           resolve(res)
         })
-        conn.release()
       })
     })
   }
@@ -87,6 +87,7 @@ export default class Sql{
             res.msg = '插入成功'
             status = 1
           }
+          conn.release()
           Sql.logs_write({
             name: new Date().getTime().toString(),
             type: 'exec_sql_insert',
@@ -95,7 +96,6 @@ export default class Sql{
           })
           resolve(res)
         })
-        conn.release()
       })
     })
   }
@@ -106,13 +106,14 @@ export default class Sql{
     content: string,
     status?: number
   }): void {
-    BgStore.getPoolConnection().then((conn)=>{
-      conn.query(
-        'insert into logs(name, type, content, datetime, status) values(?,?,?,?,?);',
-        [data.name, data.type, data.content, new Date().getTime(), data.status]
-      )
-      conn.release()
-    })
+    console.log(data)
+    // BgStore.getPoolConnection().then((conn)=>{
+    //   conn.query(
+    //     'insert into logs(name, type, content, datetime, status) values(?,?,?,?,?);',
+    //     [data.name, data.type, data.content, new Date().getTime(), data.status]
+    //   )
+    //   conn.release()
+    // })
   }
   // meta
   public static getMeta(meta_key: string): Promise<Res> {
@@ -134,9 +135,9 @@ export default class Sql{
             res.code = 200
             res.msg = '获取成功'
           }
+          conn.release()
           resolve(res)
         })
-        conn.release()
       })
     })
   }
@@ -158,6 +159,7 @@ export default class Sql{
             res.msg = '插入成功'
             status = 1
           }
+          conn.release()
           Sql.logs_write({
             name: timestamp.toString(),
             type: 'exec_sql_insert',
@@ -166,7 +168,6 @@ export default class Sql{
           })
           resolve(res)
         })
-        conn.release()
       })
     })
   }
@@ -188,6 +189,7 @@ export default class Sql{
             res.msg = '更新成功'
             status = 1
           }
+          conn.release()
           Sql.logs_write({
             name: timestamp.toString(),
             type: 'exec_sql_update',
@@ -196,7 +198,6 @@ export default class Sql{
           })
           resolve(res)
         })
-        conn.release()
       })
     })
   }
