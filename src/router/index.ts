@@ -14,7 +14,8 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {name: Path.Home.name, path: Path.Home.path, component: ()=>import('@/views/Home.vue')},
       {name: Path.LocalServer.name, path: Path.LocalServer.path, component: ()=>import('@/views/LocalServer.vue')},
-      {name: Path.Settings.name, path: Path.Settings.path, component: ()=>import('@/views/Settings.vue')}
+      {name: Path.Settings.name, path: Path.Settings.path, component: ()=>import('@/views/Settings.vue')},
+      {name: Path.Bookmark.name, path: Path.Bookmark.path, component: ()=>import('@/views/Bookmark.vue')}
     ]
   }
 ]

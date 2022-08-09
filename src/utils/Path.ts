@@ -22,4 +22,8 @@ export default class Path{
     name: 'LocalServer',
     path: '/main/localserver'
   }
+  public static Bookmark = {
+    name: 'Bookmark',
+    path: '/main/bookmark'
+  }
 }

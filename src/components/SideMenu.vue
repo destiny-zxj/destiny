@@ -41,6 +41,7 @@ export default defineComponent({
       menu: [
         {id: 'topblank', name: '', icon: '', path: '', active: false, roundBottom: false, roundTop: false, disable: true},
         {id: 'home', name: '总览', icon: 'wap-home', path: Path.Home.path, active: false, roundBottom: false, roundTop: false},
+        {id: 'bookmark', name: '我的书签', icon: 'bookmark', path: Path.Bookmark.path, active: false, roundBottom: false, roundTop: false},
         {id: 'server', name: '本地服务器设置', icon: 'cluster', path: Path.LocalServer.path, active: false, roundBottom: false, roundTop: false},
         {id: 'setting', name: '设置', icon: 'setting', path: Path.Settings.path, active: false, roundBottom: false, roundTop: false},
         {id: 'bottomblank', name: '', icon: '', path: '', active: false, roundBottom: false, roundTop: false, disable: true}
@@ -70,7 +71,7 @@ export default defineComponent({
     }
 
     onMounted(()=>{
-      activeMenuItem(data.menu[3])
+      activeMenuItem(data.menu[2])
     })
 
     return {

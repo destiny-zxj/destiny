@@ -12,11 +12,13 @@
           <span>Welcome back!</span>
         </div>
       </div>
-      <router-view />
+      <div class="main-center-body">
+        <router-view />
+      </div>
     </div>
-    <div class="main-right-box">
+    <!-- <div class="main-right-box">
       <right-box />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -28,13 +30,14 @@
 */
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
 import SideMenu from '@/components/SideMenu.vue'
-import RightBox from '@/components/RightBox.vue'
+// import RightBox from '@/components/RightBox.vue'
 import { ElectronApi } from '@/utils/ElectronApi'
 
 export default defineComponent({
   name: '',
   components: {
-    SideMenu, RightBox
+    SideMenu, 
+    // RightBox
   },
   setup () {
     const data = reactive({
@@ -68,6 +71,8 @@ export default defineComponent({
   flex: 1;
   box-sizing: border-box;
   padding: 30px 20px 0;
+  display: flex;
+  flex-direction: column;
 }
 .main-center-top {
   text-align: left;
@@ -78,5 +83,8 @@ export default defineComponent({
 }
 .main-center-top-welcome {
   color: var(--van-gray-7);
+}
+.main-center-body {
+  flex: 1;
 }
 </style>

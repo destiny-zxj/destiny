@@ -14,6 +14,9 @@ const ElectronApi = {
   getAppConfig: (window as any).electronAPI.getAppConfig as CallableFunction,
   saveAppConfig: (window as any).electronAPI.saveAppConfig as CallableFunction,
   getMysqlStatus: (window as any).electronAPI.getMysqlStatus as CallableFunction,
+  getBookmarks: (window as any).electronAPI.getBookmarks as CallableFunction,
+  addBookmark: (window as any).electronAPI.addBookmark as CallableFunction,
+  openUrl: (window as any).electronAPI.openUrl as CallableFunction,
 }
 
 export {

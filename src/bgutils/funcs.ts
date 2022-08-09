@@ -52,7 +52,12 @@ const hello = (): Promise<any> => {
     })
   })
 }
-//
+/**
+ * 执行系统级命令
+ * @param cmd 
+ * @param filename 
+ * @returns 
+ */
 const execShell = (cmd: string, filename=''): Promise<any> => {
   if (filename) {
     cmd += ` ${filename}`
@@ -74,7 +79,11 @@ const execShell = (cmd: string, filename=''): Promise<any> => {
     })
   })
 }
-
+/**
+ * 执行自定义命令
+ * @param params 
+ * @returns 
+ */
 const executeCmd = (params: any) => {
   
   const temp_dir = path.join(__dirname, '../.temp')
@@ -202,9 +211,7 @@ const getMysqlStatus = (): Promise<boolean> => {
  * @returns 
  */
 const getAppConfig = (): Promise<any> => {
-  return new Promise((resolve)=>{
-    resolve(BgUtil.getAppConfig())
-  })
+  return BgUtil.getAppConfig()
 }
 /**
  * 保存 AppConfig
@@ -213,13 +220,54 @@ const getAppConfig = (): Promise<any> => {
  * @returns 
  */
 const saveAppConfig = (event: any, appConfig: any): Promise<Res> => {
+  return BgUtil.saveAppConfig(appConfig)
+}
+
+/**
+ * 获取书签
+ * @returns 
+ */
+const getBookmarks = (event: any, params: any): Promise<Res> => {
+  return Sql.getBookmarks(params.page, params.size)
+}
+/**
+ * 新增书签
+ * @param event 
+ * @param bookmark 
+ * @returns 
+ */
+const addBookmark = (event: any, bookmark: any): Promise<Res> => {
+  const res = new Res()
   return new Promise((resolve)=>{
-    console.log(appConfig)
-    resolve(BgUtil.saveAppConfig(appConfig))
+    if (!bookmark) {
+      res.msg = 'bookmark is null'
+      resolve(res)
+    }
+    if (!bookmark.name) {
+      res.msg = '缺少参数: name'
+      resolve(res)
+    }
+    if (!bookmark.url) {
+      res.msg = '缺少参数: url'
+      resolve(res)
+    }
+    if (!bookmark.sort_id) {
+      res.msg = '缺少参数: sort_id'
+      resolve(res)
+    }
+    resolve(Sql.insertBookmark(bookmark.name, bookmark.url, bookmark.sort_id, bookmark.icon))
   })
+}
+/**
+ * 打开链接
+ * @param event 
+ * @param url 
+ */
+const openUrl = (event: any, url: string): void => {
+  execShell(`open "${url}"`)
 }
 
 export {
   hello, handleExtUrl, getServerStatus, getServerConfig, reloadServer, saveServerConfig, getAppConfig,
-  saveAppConfig, getMysqlStatus
+  saveAppConfig, getMysqlStatus, getBookmarks, addBookmark, openUrl
 }

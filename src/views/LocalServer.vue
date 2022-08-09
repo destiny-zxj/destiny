@@ -96,10 +96,8 @@ export default defineComponent({
         }
       }
       getLocalServerConfig()
-      setTimeout(()=>{
-        data.loading = false
-        Util.showToast('加载成功', 500)
-      }, 200)
+      data.loading = false
+      Util.showToast('加载成功', 500)
     }
     const getLocalServerConfig = async () => {
       const serverConfig = await ElectronApi.getServerConfig()

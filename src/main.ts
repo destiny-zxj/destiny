@@ -3,11 +3,11 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import 'vant/lib/index.css'
-import { Button, Calendar, CellGroup, Divider, Field, Form, Icon, Loading, Overlay, Switch } from 'vant'
+import { Button, Calendar, Cell, CellGroup, Dialog, Divider, Field, Form, Icon, Loading, Overlay, Switch } from 'vant'
 
 const app = createApp(App)
 const coms = [
-  Button, Icon, Calendar, Divider, Field, CellGroup, Switch, Form, Overlay, Loading
+  Button, Icon, Calendar, Divider, Field, CellGroup, Switch, Form, Overlay, Loading, Cell, Dialog
 ]
 
 coms.map((elem) => {

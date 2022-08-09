@@ -88,8 +88,8 @@ app.on('ready', async () => {
   BgUtil.initBgStore()
   BgUtil.load()
   // hide
-  app.dock.hide()
-  win.hide()
+  // app.dock.hide()
+  // win.hide()
   // 保存全局变量
   BgStore.win = win
   Object.assign(global, {

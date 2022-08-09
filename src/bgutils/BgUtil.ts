@@ -16,7 +16,7 @@ import path from 'path'
 export default class BgUtil{
   // AppConfig.json 文件路径
   public static appConfigFile = path.join(__dirname, process.env.VUE_APP_CONFIG as string)
-  public static generateSqlData(data: Record<string, any>): SqlData {
+  public static generateSqlData(data: Record<string, any>, update=false): SqlData {
     const fields: string[] = []
     const placeholders: string[] = []
     const values: any[] = []
@@ -28,8 +28,13 @@ export default class BgUtil{
         values.push(value)
       }
     }
+    let sql_data = ''
+    if (update) {
+      sql_data = fields.join('= ? ,')
+      sql_data += '= ? '
+    }
     return {
-      fields, placeholders, values
+      fields, placeholders, values, sql_data
     }
   }
   public static async initBgStore() {
@@ -91,4 +96,5 @@ interface SqlData{
   fields: string[]; 
   placeholders: string[];
   values: any[];
+  sql_data: string;
 }

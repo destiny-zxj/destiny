@@ -27,7 +27,7 @@ export default class Util{
    * @param msg 轻提示
    * @param duration 
    */
-  public static showToast(msg: string, duration=2000): void {
+  public static showToast(msg: string, duration=1500): void {
     Toast({
       message: msg,
       forbidClick: true,

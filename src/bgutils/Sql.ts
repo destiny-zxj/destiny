@@ -211,4 +211,98 @@ export default class Sql{
       return Sql.insertMeta(meta_key, meta_value)
     }
   }
+  // bookmarks
+  public static getBookmarks(page=1, size=10): Promise<Res> {
+    const res = new Res();
+    if (page<0) page=1
+    if (size<0) size=10
+    return new Promise((resolve) => {
+      BgStore.getPoolConnection().then((conn)=>{
+        const sql = 'select * from bookmarks order by sort_id desc;'
+        conn.query(sql,[(page-1) * size, size], (error, results) => {
+          if (error) {
+            res.msg = 'ERROR_MYSQL_EXECUTE'
+            res.data = error
+          } else {
+            // 自行分页
+            let total = 0
+            let resList = [] as any[]
+            const from = (page-1)*size
+            if (results instanceof Array) {
+              total = results.length
+              if (from < results.length) {
+                resList = results.splice(from, size)
+              }
+            }
+            res.code = 200
+            res.data = {
+              total: total,
+              res_total: resList.length,
+              res_list: resList
+            }
+            res.msg = '获取成功'
+          }
+          conn.release()
+          resolve(res)
+        })
+      })
+    })
+  }
+  public static insertBookmark(name: string, url: string, sort_id: number, icon: string | null=''): Promise<Res> {
+    const res = new Res();
+    return new Promise((resolve) => {
+      BgStore.getPoolConnection().then((conn)=>{
+        const sql = 'insert into bookmarks(name, url, icon, sort_id) values(?,?,?,?);'
+        const values = [name, url, icon, sort_id]
+        conn.query(sql, values, (error, results) => {
+          let status = 0
+          if (error) {
+            res.msg = 'ERROR_MYSQL_EXECUTE'
+            res.data = error
+          } else {
+            res.code = 200
+            res.data = results
+            res.msg = '插入成功'
+            status = 1
+          }
+          conn.release()
+          resolve(res)
+        })
+      })
+    })
+  }
+  public static updateBookmark(bookmark: {
+    id: number;
+    name: string;
+    url: string;
+    sort_id: number;
+    icon?: string;
+  }): Promise<Res> {
+    const res = new Res();
+    return new Promise((resolve) => {
+      BgStore.getPoolConnection().then((conn)=>{
+        const bid = bookmark.id
+        let sql = 'update bookmarks set ${0} where id = ?;'
+        const {fields, values} = BgUtil.generateSqlData(bookmark)
+        let sql_data = fields.join('= ? ,')
+        sql_data += '= ? '
+        sql = sql.replace('${0}', sql_data)
+        values.push(bid)
+        conn.query(sql, values, (error, results) => {
+          let status = 0
+          if (error) {
+            res.msg = 'ERROR_MYSQL_EXECUTE'
+            res.data = error
+          } else {
+            res.code = 200
+            res.data = results
+            res.msg = '更新成功'
+            status = 1
+          }
+          conn.release()
+          resolve(res)
+        })
+      })
+    })
+  }
 }
