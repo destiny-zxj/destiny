@@ -1,7 +1,7 @@
 import { ipcMain, Tray, Menu, BrowserWindow, app, nativeImage } from 'electron'
 import {
   hello, handleExtUrl, getServerStatus, getServerConfig, reloadServer, saveServerConfig, getAppConfig,
-  saveAppConfig, getMysqlStatus, getBookmarks, addBookmark, openUrl
+  saveAppConfig, getMysqlStatus, getBookmarks, addBookmark, openUrl, deleteBookmark
 } from './bgutils/funcs'
 import fs from 'fs'
 import path from 'path'
@@ -74,6 +74,7 @@ class InitApp{
     ipcMain.handle('getBookmarks', getBookmarks)
     ipcMain.handle('addBookmark', addBookmark)
     ipcMain.handle('openUrl', openUrl)
+    ipcMain.handle('deleteBookmark', deleteBookmark)
     // 监听前传来的指令
     // ipcMain.on('reloadServer', reloadServer)
     // tray

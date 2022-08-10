@@ -178,7 +178,10 @@ const reloadServer = (event: any, status: string): Promise<boolean> => {
 const saveServerConfig = (event: any, config: any): Promise<boolean> => {
   return new Promise((resolve)=>{
     if (!config) resolve(false)
-    if (config.server_port) Sql.saveMeta(MetaKey.SERVER_PORT, config.server_port)
+    if (config.server_port) {
+      Sql.saveMeta(MetaKey.SERVER_PORT, config.server_port)
+      BgStore.serverPort = config.server_port
+    }
     if (config.server_auto_run) Sql.saveMeta(MetaKey.SERVER_AUTO_RUN, config.server_auto_run)
     resolve(true)
   })
@@ -220,7 +223,14 @@ const getAppConfig = (): Promise<any> => {
  * @returns 
  */
 const saveAppConfig = (event: any, appConfig: any): Promise<Res> => {
-  return BgUtil.saveAppConfig(appConfig)
+  return new Promise((resolve)=>{
+    BgUtil.saveAppConfig(appConfig).then(res=>{
+      if (res.code === 200) {
+        BgUtil.initBgStore()
+      }
+      resolve(res)
+    })
+  })
 }
 
 /**
@@ -259,6 +269,22 @@ const addBookmark = (event: any, bookmark: any): Promise<Res> => {
   })
 }
 /**
+ * 删除标签
+ * @param event 
+ * @param bid 标签 id
+ * @returns 
+ */
+const deleteBookmark = (event: any, bid: number): Promise<Res> => {
+  const res = new Res()
+  return new Promise((resolve)=>{
+    if (!bid) {
+      res.msg = '缺少参数: bid'
+      resolve(res)
+    }
+    resolve(Sql.deleteBookmark(bid))
+  })
+}
+/**
  * 打开链接
  * @param event 
  * @param url 
@@ -269,5 +295,5 @@ const openUrl = (event: any, url: string): void => {
 
 export {
   hello, handleExtUrl, getServerStatus, getServerConfig, reloadServer, saveServerConfig, getAppConfig,
-  saveAppConfig, getMysqlStatus, getBookmarks, addBookmark, openUrl
+  saveAppConfig, getMysqlStatus, getBookmarks, addBookmark, openUrl, deleteBookmark
 }

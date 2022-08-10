@@ -86,7 +86,6 @@ app.on('ready', async () => {
   createWindow()
   initApp = new InitApp(win, createWindow)
   BgUtil.initBgStore()
-  BgUtil.load()
   // hide
   // app.dock.hide()
   // win.hide()

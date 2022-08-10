@@ -17,6 +17,7 @@ const ElectronApi = {
   getBookmarks: (window as any).electronAPI.getBookmarks as CallableFunction,
   addBookmark: (window as any).electronAPI.addBookmark as CallableFunction,
   openUrl: (window as any).electronAPI.openUrl as CallableFunction,
+  deleteBookmark: (window as any).electronAPI.deleteBookmark as CallableFunction,
 }
 
 export {

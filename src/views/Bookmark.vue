@@ -29,7 +29,7 @@
           <template #value>
             <div class="bookmark-act-bnts">
               <span class="bookmark-item-btn bookmark-item-open" @click="onClickBookmark(item)">打开</span>
-              <span class="bookmark-item-btn bookmark-item-delete" @click="onClickBookmark(item)">删除</span>
+              <span class="bookmark-item-btn bookmark-item-delete" @click="onBookmarkDelete(item)">删除</span>
             </div>
           </template>
         </van-cell>
@@ -98,7 +98,15 @@ export default defineComponent({
     const addBookmark = () => {
       data.dialog.show = true
     }
-
+    const onBookmarkDelete = (item: any) => {
+      console.log(item)
+      ElectronApi.deleteBookmark(item.id).then((res: Res)=>{
+        if (res.code === 200) {
+          getBookmarks()
+          Util.showToast(res.msg)
+        }
+      })
+    }
     const getBookmarks = () => {
       ElectronApi.getBookmarks({
         page: data.page.current,
@@ -248,7 +256,8 @@ export default defineComponent({
       onClickAdd,
       allowDrop,
       onDrag,
-      onDrop
+      onDrop,
+      onBookmarkDelete
     }
   }
 })

@@ -37,17 +37,29 @@ export default class BgUtil{
       fields, placeholders, values, sql_data
     }
   }
+  /**
+   * 从数据库加载配置
+   */
   public static async initBgStore() {
+    const isConnected = await BgUtil.mysqlIsConnected()
+    if (!isConnected) return
     console.log('init BgStore')
     const metaConfig: MetaConfig = {
       server_port: (await Sql.getMeta(MetaKey.SERVER_PORT)).data
     }
     console.log(metaConfig)
     BgStore.setConfigByDB(metaConfig)
+    BgUtil.load()
   }
   public static async load() {
-    const auto_run = (await Sql.getMeta(MetaKey.SERVER_AUTO_RUN)).data
-    if (auto_run === '1') BgStore.server = new Server() as any
+    const isConnected = await BgUtil.mysqlIsConnected()
+    if (isConnected) {
+      const auto_run = (await Sql.getMeta(MetaKey.SERVER_AUTO_RUN)).data
+      if (auto_run === '1' && !BgStore.server) {
+        BgStore.server = new Server() as any
+      }
+    }
+    
   }
   public static getAppConfig(): any {
     if (!fs.existsSync(BgUtil.appConfigFile)) {
@@ -89,6 +101,19 @@ export default class BgUtil{
       
     })
     
+  }
+  public static async mysqlIsConnected() {
+    const configMysql = BgUtil.getAppConfig().mysql
+    if (configMysql && await BgStore.testMysqlConnection({
+      host: configMysql.host,
+      port: configMysql.port,
+      user: configMysql.user,
+      password: configMysql.password,
+      database: configMysql.datanase,
+    })) {
+      return true
+    }
+    return false
   }
 }
 

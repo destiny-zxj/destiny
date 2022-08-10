@@ -95,14 +95,21 @@ export default defineComponent({
           color: 'var(--van-orange)'
         }
       }
-      getLocalServerConfig()
+      getLocalServerConfig().then((result: any)=>{
+        // console.log(result)
+        if (result) Util.showToast('加载成功', 500)
+        // else Util.showToast('加载失败', 500)
+      })
       data.loading = false
-      Util.showToast('加载成功', 500)
+      
     }
     const getLocalServerConfig = async () => {
       const serverConfig = await ElectronApi.getServerConfig()
-      console.log(serverConfig)
-      data.config = serverConfig
+      if (serverConfig) {
+        data.config = serverConfig
+        return true
+      }
+      return false
     }
     const reloadServer = (status: string) => {
       data.loading = true

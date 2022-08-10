@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getBookmarks: (params: any) => ipcRenderer.invoke('getBookmarks', params),
   addBookmark: (bookmark: any) => ipcRenderer.invoke('addBookmark', bookmark),
   openUrl: (url: string) => ipcRenderer.invoke('openUrl', url),
+  deleteBookmark: (bid: number) => ipcRenderer.invoke('deleteBookmark', bid),
   // 前向后发送指令
   // reloadServer: (status: string) => ipcRenderer.send('reloadServer', status),
   // 后调用前

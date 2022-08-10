@@ -7,8 +7,6 @@
 import express from 'express'
 import mysql from 'mysql'
 import {MetaConfig} from './MetaConfig'
-import fs from 'fs'
-import BgUtil from './BgUtil';
 
 export default class BgStore{
   // 程序主窗口
@@ -17,55 +15,6 @@ export default class BgStore{
   public static server: LocalServer;
   // 本地服务器运行端口
   public static serverPort: number;
-  // mysql 连接池
-  public static pool: mysql.Pool;
-
-  public static getPoolConnection(reload=false): Promise<mysql.PoolConnection> {
-    return new Promise((resolve, reject)=>{
-      if(reload) {
-        // 重新连接 mysql
-        if (BgStore.pool) {
-          console.log('重载 mysql pool')
-          BgStore.pool.end()
-          console.log('pool', BgStore.pool)
-        }
-      }
-      if (BgStore.pool) {
-        BgStore.pool.getConnection((err, conn)=>{
-          if (err) {
-            console.log('数据库连接失败！')
-            process.exit(1)
-          } else {
-            resolve(conn)
-          }
-        })
-      } else {
-        const config = BgUtil.getAppConfig()
-        // console.log(config)
-        if (config && config.mysql) {
-          mysql.createPool({
-            host: config.mysql.host,
-            port: config.mysql.port,
-            user: config.mysql.user,
-            password: config.mysql.password,
-            database: config.mysql.database,
-            timeout: 2000,
-            connectionLimit: 10
-          }).getConnection((err, conn)=>{
-            if (err) {
-              console.log('数据库连接失败！')
-              process.exit(1)
-            } else {
-              resolve(conn)
-            }
-          })
-        } else {
-          console.error(`数据库配置文件错误：${process.env.VUE_APP_CONFIG}`)
-          process.exit(1)
-        }
-      }
-    })
-  }
 
   /**
    * 测试数据库连接
